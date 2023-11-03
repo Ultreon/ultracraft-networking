@@ -20,7 +20,7 @@ plugins {
 apply(plugin = "org.jetbrains.gradle.plugin.idea-ext")
 
 group = "com.ultreon.craftmods"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 val ultracraftVersion = "09dee90231"
 
