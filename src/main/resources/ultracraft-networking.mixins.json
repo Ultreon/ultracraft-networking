@@ -1,0 +1,6 @@
+{
+  "package": "com.ultreon.craftmods.networking.mixin",
+  "mixins": [
+    "InGamePacketStageMixin"
+  ]
+}
