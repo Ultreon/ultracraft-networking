@@ -1,27 +1,29 @@
-package com.ultreon.craftmods.networking.api;
+package com.ultreon.craftmods.networking.impl;
 
 import com.ultreon.craft.network.PacketBuffer;
-import com.ultreon.craftmods.networking.api.packet.BasePacket;
-import com.ultreon.craftmods.networking.impl.NetworkChannel;
+import com.ultreon.craftmods.networking.api.IPacketRegisterContext;
+import com.ultreon.craftmods.networking.api.packet.Packet;
+import com.ultreon.craftmods.networking.impl.packet.ModNetChannel;
 import io.netty.handler.codec.DecoderException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
-public class PacketRegisterContext {
-    private final NetworkChannel channel;
+public class PacketRegisterContext implements IPacketRegisterContext {
+    private final ModNetChannel channel;
     private int id;
 
-    PacketRegisterContext(NetworkChannel channel, int id) {
+    PacketRegisterContext(ModNetChannel channel, int id) {
         this.channel = channel;
         this.id = id;
     }
 
 
+    @Override
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public final <T extends BasePacket<T>> int register(Function<PacketBuffer, T> construct, T... type) {
+    public final <T extends Packet<T>> int register(Function<PacketBuffer, T> construct, T... type) {
         final int id = this.id++;
         final Constructor<T> declaredConstructor;
 
@@ -42,7 +44,7 @@ public class PacketRegisterContext {
         }
 
         this.channel.register(
-                clazz, BasePacket::toBytes,
+                clazz, Packet::toBytes,
                 buffer -> {
                     T t;
                     try {
@@ -63,7 +65,7 @@ public class PacketRegisterContext {
                     }
                     return t;
                 },
-                BasePacket::handlePacket);
+                Packet::handlePacket);
 
         return id;
     }

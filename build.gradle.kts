@@ -3,6 +3,11 @@ import org.jetbrains.gradle.ext.runConfigurations
 import org.jetbrains.gradle.ext.settings
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 //file:noinspection GroovyUnusedCatchParameter
 buildscript {
@@ -15,38 +20,65 @@ plugins {
     id("idea")
     id("java")
     id("java-library")
+    id("maven-publish")
 }
 
 apply(plugin = "org.jetbrains.gradle.plugin.idea-ext")
 
-group = "com.ultreon.craftmods"
-version = "0.1.0"
+group = "io.github.ultreon.craftmods"
+version = "0.1.0+snapshot.${DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm").format(Instant.now().atOffset(ZoneOffset.UTC))}"
 
-val ultracraftVersion = "09dee90231"
+println("Building version: $version")
+println("Project name: $project.name")
+
+sourceSets {
+    create("api") {
+        java {
+            srcDir("src/api/java")
+        }
+    }
+
+    main {
+        java {
+            compileClasspath += sourceSets["api"].output
+            runtimeClasspath += sourceSets["api"].output
+        }
+    }
+}
+
+configurations {
+    this["apiCompileClasspath"].extendsFrom(this["compileClasspath"])
+}
 
 repositories {
     mavenCentral()
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://maven.fabricmc.net/")
-    maven("https://github.com/Ultreon/ultreon-data/raw/main/.mvnrepo/")
-    maven("https://github.com/Ultreon/corelibs/raw/main/.mvnrepo/")
-    maven("https://jitpack.io")
+
+    maven {
+        name = "Ultracraft GitHub"
+        url = uri("https://maven.pkg.github.com/Ultreon/ultracraft")
+
+        credentials {
+            username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")) as String
+            password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
+        }
+    }
+
+    maven {
+        name = "Fabric"
+        url = uri("https://maven.fabricmc.net/")
+    }
+
+    maven {
+        name = "Jitpack"
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
-    implementation("com.github.Ultreon.ultracraft:client:$ultracraftVersion")
-    implementation("com.github.Ultreon.ultracraft:desktop:$ultracraftVersion")
-    implementation("com.github.Ultreon.ultracraft:server:$ultracraftVersion")
-    implementation("com.github.Ultreon.ultracraft:gameprovider:$ultracraftVersion")
-    implementation("net.fabricmc:fabric-language-kotlin:1.10.13+kotlin.1.9.20")
+//    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+//    testImplementation("org.junit.jupiter:junit-jupiter")
 
-    implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.12.0")
-    implementation("com.badlogicgames.gdx:gdx-platform:1.12.0:natives-desktop")
-    implementation("com.badlogicgames.gdx:gdx-box2d-platform:1.12.0:natives-desktop")
-    implementation("com.badlogicgames.gdx:gdx-bullet-platform:1.12.0:natives-desktop")
-    implementation("com.badlogicgames.gdx-controllers:gdx-controllers-desktop:2.2.1")
-    implementation("com.badlogicgames.gdx:gdx-freetype-platform:1.12.0:natives-desktop")
-    implementation("com.badlogicgames.gdx-video:gdx-video-lwjgl3:1.3.2-SNAPSHOT")
+    implementation("io.github.ultreon.craft:ultracraft-desktop:0.1.0+snapshot.2024.03.24.23.50")
 }
 
 fun setupIdea() {
@@ -137,12 +169,57 @@ commonProperties
             }
         }
     }
-    idea {
-        module {
-            isDownloadJavadoc = true
-            isDownloadSources = true
-        }
+    idea.module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
     }
 }
 
 this.setupIdea()
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            groupId = "io.github.ultreon.craftmods"
+            artifactId = "ultracraft-networking"
+            version = project.version.toString()
+
+            pom {
+                name.set("Ultracraft Networking")
+                description.set("Improved networking API for Ultracraft")
+
+                url.set("https://github.com/Ultreon/ultracraft-networking")
+
+                licenses {
+                    license {
+                        name.set("AGPL-3.0")
+                        url.set("https://www.gnu.org/licenses/agpl-3.0.en.html")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("XyperCode")
+                        name.set("XyperCode")
+
+                        url.set("https://github.com/XyperCode")
+                    }
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Ultreon/ultracraft-networking")
+
+            credentials {
+                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")) as String
+                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
+            }
+        }
+    }
+}

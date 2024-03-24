@@ -7,8 +7,8 @@
   "description": "Improved networking API for Ultracraft",
   "contact": {
     "homepage": "https://xypercode.github.io",
-    "issues": "https://github.com/XyperCode/ultracraft-kotlin-tests/issues",
-    "sources": "https://github.com/XyperCode/ultracraft-kotlin-tests"
+    "issues": "https://github.com/Ultreon/ultracraft-networking/issues",
+    "sources": "https://github.com/Ultreon/ultracraft-networking"
   },
   "license": "All-Rights-Reserved",
   "icon": "assets/uc_networking/icon.png",
@@ -26,7 +26,7 @@
       "com.ultreon.craftmods.networking.UcNetworkingMod"
     ],
     "uc_networking:init": [
-      "com.ultreon.craftmods.networking.test.TestNetworkInit"
+      "com.ultreon.craftmods.networking.test.TestNetworkEntry"
     ]
   }
 }

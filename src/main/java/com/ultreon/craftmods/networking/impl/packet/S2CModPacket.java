@@ -1,20 +1,19 @@
-package com.ultreon.craftmods.networking.impl;
+package com.ultreon.craftmods.networking.impl.packet;
 
 import com.ultreon.craft.client.network.InGameClientPacketHandlerImpl;
 import com.ultreon.craft.network.PacketBuffer;
 import com.ultreon.craft.network.PacketContext;
-import com.ultreon.craft.network.packets.Packet;
-import com.ultreon.craftmods.networking.api.ModPacketContext;
-import com.ultreon.craftmods.networking.api.packet.BasePacket;
-import com.ultreon.libs.commons.v0.Identifier;
+import com.ultreon.craft.util.Identifier;
+import com.ultreon.craftmods.networking.api.packet.Packet;
+import com.ultreon.craftmods.networking.impl.ModPacketContext;
 import net.fabricmc.api.EnvType;
 
-public class S2CModPacket extends Packet<InGameClientPacketHandlerImpl> {
+public class S2CModPacket extends com.ultreon.craft.network.packets.Packet<InGameClientPacketHandlerImpl> {
     private final Identifier channelId;
-    private final BasePacket<?> packet;
-    private final NetworkChannel channel;
+    private final Packet<?> packet;
+    private final ModNetChannel channel;
 
-    public S2CModPacket(NetworkChannel channel, BasePacket<?> packet) {
+    public S2CModPacket(ModNetChannel channel, Packet<?> packet) {
         this.channel = channel;
         this.channelId = channel.id();
         this.packet = packet;
@@ -22,7 +21,7 @@ public class S2CModPacket extends Packet<InGameClientPacketHandlerImpl> {
 
     public S2CModPacket(PacketBuffer buffer) {
         this.channelId = buffer.readId();
-        this.channel = NetworkChannel.getChannel(this.channelId);
+        this.channel = ModNetChannel.getChannel(this.channelId);
         this.packet = this.channel.getDecoder(buffer.readUnsignedShort()).apply(buffer);
     }
 

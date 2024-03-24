@@ -1,20 +1,19 @@
-package com.ultreon.craftmods.networking.impl;
+package com.ultreon.craftmods.networking.impl.packet;
 
 import com.ultreon.craft.network.PacketBuffer;
 import com.ultreon.craft.network.PacketContext;
-import com.ultreon.craft.network.packets.Packet;
 import com.ultreon.craft.network.server.InGameServerPacketHandler;
-import com.ultreon.craftmods.networking.api.ModPacketContext;
-import com.ultreon.craftmods.networking.api.packet.BasePacket;
-import com.ultreon.libs.commons.v0.Identifier;
+import com.ultreon.craft.util.Identifier;
+import com.ultreon.craftmods.networking.api.packet.Packet;
+import com.ultreon.craftmods.networking.impl.ModPacketContext;
 import net.fabricmc.api.EnvType;
 
-public class C2SModPacket extends Packet<InGameServerPacketHandler> {
+public class C2SModPacket extends com.ultreon.craft.network.packets.Packet<InGameServerPacketHandler> {
     private final Identifier channelId;
-    private final BasePacket<?> packet;
-    private NetworkChannel channel;
+    private final Packet<?> packet;
+    private ModNetChannel channel;
 
-    public C2SModPacket(NetworkChannel channel, BasePacket<?> packet) {
+    public C2SModPacket(ModNetChannel channel, Packet<?> packet) {
         this.channel = channel;
         this.channelId = channel.id();
         this.packet = packet;
@@ -22,7 +21,7 @@ public class C2SModPacket extends Packet<InGameServerPacketHandler> {
 
     public C2SModPacket(PacketBuffer buffer) {
         this.channelId = buffer.readId();
-        this.channel = NetworkChannel.getChannel(this.channelId);
+        this.channel = ModNetChannel.getChannel(this.channelId);
         this.packet = this.channel.getDecoder(buffer.readUnsignedShort()).apply(buffer);
     }
 
@@ -39,7 +38,7 @@ public class C2SModPacket extends Packet<InGameServerPacketHandler> {
         this.packet.handlePacket(() -> new ModPacketContext(this.channel, handler.context().getPlayer(), handler.context().getConnection(), EnvType.SERVER));
     }
 
-    public NetworkChannel getChannel() {
+    public ModNetChannel getChannel() {
         return this.channel;
     }
 }

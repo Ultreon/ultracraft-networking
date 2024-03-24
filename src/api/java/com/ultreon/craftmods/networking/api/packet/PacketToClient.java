@@ -1,18 +1,18 @@
 package com.ultreon.craftmods.networking.api.packet;
 
-import com.ultreon.craftmods.networking.api.ModPacketContext;
+import com.ultreon.craftmods.networking.api.IPacketContext;
 import net.fabricmc.api.EnvType;
 
 import java.util.function.Supplier;
 
-public abstract non-sealed class PacketToClient<T extends PacketToClient<T>> extends BasePacket<T> implements ClientEndpoint {
+public abstract non-sealed class PacketToClient<T extends PacketToClient<T>> extends Packet<T> implements IClientEndpoint {
     public PacketToClient() {
         super();
     }
 
     @Override
-    public final boolean handle(Supplier<ModPacketContext> context) {
-        ModPacketContext ctx = context.get();
+    public final boolean handle(Supplier<IPacketContext> context) {
+        IPacketContext ctx = context.get();
         if (ctx.getDestination() == EnvType.CLIENT)
             ctx.queue(this::handle);
         return true;

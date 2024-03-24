@@ -1,25 +1,26 @@
-package com.ultreon.craftmods.networking.api;
+package com.ultreon.craftmods.networking.impl;
 
 import com.ultreon.craft.network.Connection;
 import com.ultreon.craft.network.PacketContext;
 import com.ultreon.craft.server.player.ServerPlayer;
-import com.ultreon.craftmods.networking.impl.NetworkChannel;
+import com.ultreon.craftmods.networking.api.IPacketContext;
+import com.ultreon.craftmods.networking.impl.packet.ModNetChannel;
 import net.fabricmc.api.EnvType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class ModPacketContext extends PacketContext {
+public class ModPacketContext extends PacketContext implements IPacketContext {
     @NotNull
-    private final NetworkChannel channel;
+    private final ModNetChannel channel;
 
-    public ModPacketContext(@NotNull NetworkChannel channel, @Nullable ServerPlayer player, @NotNull Connection connection, @NotNull EnvType environment) {
+    public ModPacketContext(@NotNull ModNetChannel channel, @Nullable ServerPlayer player, @NotNull Connection connection, @NotNull EnvType environment) {
         super(player, connection, environment);
         this.channel = channel;
     }
 
-    public @NotNull NetworkChannel getChannel() {
+    public @NotNull ModNetChannel getChannel() {
         return this.channel;
     }
 

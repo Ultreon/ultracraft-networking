@@ -1,8 +1,8 @@
 package com.ultreon.craftmods.networking.test;
 
 import com.ultreon.craftmods.networking.UcNetworkingMod;
-import com.ultreon.craftmods.networking.api.Network;
-import com.ultreon.craftmods.networking.api.PacketRegisterContext;
+import com.ultreon.craftmods.networking.api.IPacketRegisterContext;
+import com.ultreon.craftmods.networking.impl.Network;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -14,7 +14,7 @@ public class TestNetwork extends Network {
     }
 
     @Override
-    protected void registerPackets(PacketRegisterContext ctx) {
+    protected void registerPackets(IPacketRegisterContext ctx) {
         ctx.register(TestPacket::new);
     }
 }

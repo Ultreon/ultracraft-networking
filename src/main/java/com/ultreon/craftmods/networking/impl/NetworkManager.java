@@ -1,6 +1,6 @@
-package com.ultreon.craftmods.networking.api;
+package com.ultreon.craftmods.networking.impl;
 
-import com.ultreon.libs.commons.v0.Identifier;
+import com.ultreon.craft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

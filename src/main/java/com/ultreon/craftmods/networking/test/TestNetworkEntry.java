@@ -1,12 +1,12 @@
 package com.ultreon.craftmods.networking.test;
 
-import com.ultreon.craftmods.networking.api.Network;
-import com.ultreon.craftmods.networking.api.NetworkInit;
+import com.ultreon.craftmods.networking.api.INetworkEntryPoint;
+import com.ultreon.craftmods.networking.impl.Network;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-public class TestNetworkInit extends NetworkInit {
+public class TestNetworkEntry implements INetworkEntryPoint {
     private static Network network;
 
     public static Network getNetwork() {
@@ -17,6 +17,6 @@ public class TestNetworkInit extends NetworkInit {
     public void init() {
         if (!FabricLoader.getInstance().isDevelopmentEnvironment()) return;
 
-        TestNetworkInit.network = new TestNetwork();
+        TestNetworkEntry.network = new TestNetwork();
     }
 }
